@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Andréa">
+<title>Andréa</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; height: 100dvh; display: flex; flex-direction: column;
+    background: #0b1020; color: #e8ecf7; font-family: system-ui, -apple-system, sans-serif;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  header { text-align: center; font-size: 1.4rem; font-weight: 600; padding: 14px; }
+  #journal { flex: 1; overflow-y: auto; padding: 0 14px; }
+  .msg { max-width: 85%; margin: 8px 0; padding: 10px 14px; border-radius: 14px; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
+  .toi { margin-left: auto; background: #1f2a4d; }
+  .andrea { background: #14302b; }
+  .msg a { display: inline-block; margin-top: 6px; color: #7fd1ff; }
+  #micro { margin: 10px 14px; padding: 18px; border: none; border-radius: 14px; background: #3b6cff; color: #fff; font-size: 17px; }
+  #micro.actif { background: #e5484d; }
+  #barre { display: flex; gap: 8px; padding: 0 14px 14px; }
+  #texte { flex: 1; min-width: 0; padding: 12px; border: none; border-radius: 12px; background: #161d36; color: #fff; font-size: 16px; }
+  #barre button { padding: 12px 16px; border: none; border-radius: 12px; background: #3b6cff; color: #fff; font-size: 16px; }
+</style>
+</head>
+<body>
+<header>Andréa</header>
+<div id="journal"></div>
+<button id="micro">Activer Andréa</button>
+<form id="barre">
+  <input id="texte" placeholder="Ou écris ici…" autocomplete="off">
+  <button type="submit">OK</button>
+</form>
+
+<script>
+const MODELE = "claude-haiku-5-5";
+const MOTS_CLES = ["andrea", "andria", "andree"];   // variantes du prénom reconnues
+const RE_PRENOM = new RegExp(MOTS_CLES.join("|"), "g");
+const SITES = {
+  youtube: "https://www.youtube.com",
+  google: "https://www.google.com",
+  gmail: "https://mail.google.com",
+  maps: "https://maps.google.com",
+  spotify: "https://open.spotify.com",
+  deezer: "https://www.deezer.com",
+  instagram: "https://www.instagram.com",
+  facebook: "https://www.facebook.com",
+  netflix: "https://www.netflix.com",
+  wikipedia: "https://fr.wikipedia.org"
+};
+
+const journal = document.getElementById("journal");
+const bouton = document.getElementById("micro");
+const champ = document.getElementById("texte");
+const formulaire = document.getElementById("barre");
+
+let historique = [];
+let ecoute = false;           // micro activé par l'utilisateur
+let enParole = false;         // Andréa est en train de parler
+let attenteCommande = false;  // on a seulement entendu "Andréa"
+let jeton = 0;
+
+const normaliser = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+
+function afficher(qui, texte, lien = null) {
+  const bulle = document.createElement("div");
+  bulle.className = "msg " + (qui === "toi" ? "toi" : "andrea");
+  bulle.textContent = texte;
+  if (lien) {
+    const a = document.createElement("a");
+    a.href = lie
